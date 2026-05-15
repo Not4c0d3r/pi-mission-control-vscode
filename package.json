@@ -1,0 +1,170 @@
+{
+  "name": "pi-mission-control",
+  "displayName": "Pi Mission Control",
+  "description": "Professional Antigravity-style mission orchestration for Pi",
+  "version": "0.1.0",
+  "publisher": "not4c0d3r",
+  "license": "MIT",
+  "icon": "media/pi-icon-full.png",
+  "engines": {
+    "vscode": "^1.100.0"
+  },
+  "categories": [
+    "AI",
+    "Chat"
+  ],
+  "activationEvents": [],
+  "main": "./out/extension.js",
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "pi-mission-control",
+          "title": "Pi Mission Control",
+          "icon": "media/pi-icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "pi-mission-control": [
+        {
+          "type": "webview",
+          "id": "pi-mission-control.chat",
+          "name": "Pi Agent"
+        },
+        {
+          "type": "webview",
+          "id": "pi-mission-control.dashboard",
+          "name": "Mission Dashboard"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "pi-mission-control.newChat",
+        "title": "Pi: New Chat"
+      },
+      {
+        "command": "pi-mission-control.abort",
+        "title": "Pi: Stop Generation"
+      },
+      {
+        "command": "pi-mission-control.selectModel",
+        "title": "Pi: Select Model"
+      },
+      {
+        "command": "pi-mission-control.toggleThinking",
+        "title": "Pi: Toggle Thinking Level"
+      },
+      {
+        "command": "pi-mission-control.focusChat",
+        "title": "Pi: Focus Chat"
+      },
+      {
+        "command": "pi-mission-control.openSettings",
+        "title": "Pi: Open Settings"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "pi-mission-control.focusChat",
+        "key": "ctrl+shift+l",
+        "mac": "cmd+shift+l"
+      },
+      {
+        "command": "pi-mission-control.newChat",
+        "key": "ctrl+shift+n",
+        "mac": "cmd+shift+n"
+      },
+      {
+        "command": "pi-mission-control.abort",
+        "key": "escape",
+        "when": "pi-mission-control.isStreaming"
+      }
+    ],
+    "configuration": {
+      "title": "Pi Mission Control",
+      "properties": {
+        "pi-mission-control.apiProvider": {
+          "type": "string",
+          "default": "",
+          "description": "Preferred AI provider (e.g. anthropic, openai, google, deepseek). Leave empty for automatic detection."
+        },
+        "pi-mission-control.apiBaseUrl": {
+          "type": "string",
+          "default": "",
+          "description": "Custom API base URL for self-hosted or proxy endpoints. Leave empty to use the provider default."
+        },
+        "pi-mission-control.defaultModel": {
+          "type": "string",
+          "default": "",
+          "description": "Default model ID to use when starting new sessions (e.g. claude-sonnet-4-20250514). Leave empty for automatic selection."
+        },
+        "pi-mission-control.thinkingLevel": {
+          "type": "string",
+          "default": "off",
+          "enum": [
+            "off",
+            "minimal",
+            "low",
+            "medium",
+            "high"
+          ],
+          "description": "Default thinking level for Pi agent responses"
+        },
+        "pi-mission-control.autoApproveTools": {
+          "type": "boolean",
+          "default": false,
+          "description": "Automatically approve tool executions without confirmation"
+        },
+        "pi-mission-control.allowedTools": {
+          "type": "array",
+          "items": { "type": "string" },
+          "default": [],
+          "description": "Restrict which tools the agent can use. Leave empty to allow all tools."
+        },
+        "pi-mission-control.autoSaveSessions": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically persist sessions"
+        },
+        "pi-mission-control.sessionStoragePath": {
+          "type": "string",
+          "default": "",
+          "description": "Custom path for session storage. Leave empty to use the default workspace .pi/ directory."
+        },
+        "pi-mission-control.contextUsageWarningThreshold": {
+          "type": "number",
+          "default": 80,
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Show a warning when context usage exceeds this percentage of the context window"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "compile": "node esbuild.js",
+    "watch": "node esbuild.js --watch",
+    "package": "npx @vscode/vsce package --allow-missing-repository --no-rewrite-relative-links",
+    "test": "vitest",
+    "test:unit": "vitest run",
+    "test:integration": "node out/test/integration/runTest.js",
+    "test:all": "npm run test:unit && npm run test:integration"
+  },
+  "dependencies": {
+    "@mariozechner/pi-agent-core": "^0.70.2",
+    "@mariozechner/pi-coding-agent": "^0.70.2",
+    "marked": "^18.0.2"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^22.0.0",
+    "@types/vscode": "^1.100.0",
+    "@vscode/test-electron": "^2.5.2",
+    "esbuild": "^0.25.0",
+    "mocha": "^11.0.0",
+    "typescript": "^5.8.0",
+    "vitest": "^3.0.0"
+  }
+}
